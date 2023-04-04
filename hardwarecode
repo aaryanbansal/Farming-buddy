@@ -1,0 +1,57 @@
+#include<DHT.h>
+
+#define LIGHT 18
+#define MOISTURE_SENSOR 34
+#define DHT_SENSOR 2
+#define FIRE 5
+
+
+
+DHT dht(DHT_SENSOR, DHT22);
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(MOISTURE_SENSOR, INPUT);
+  pinMode(LIGHT, INPUT);
+  pinMode(FIRE, INPUT);
+  dht.begin();
+
+  // initWiFi();
+}
+int Count=0;
+
+void loop() {
+ 
+  int ldr_value = analogRead(LIGHT);
+  float voltage = ldr_value * (5.0 / 4095.0); // Convert the LDR value to voltage
+  float lux = 500.0 * voltage; 
+
+
+  int  moisture_val = analogRead(MOISTURE_SENSOR); 
+  float humid_val = dht.readHumidity();
+  float temp_val = dht.readTemperature();
+  int fstatus=digitalRead(FIRE);
+  if (isnan(humid_val) || isnan(temp_val)) {
+    humid_val = 0;
+    temp_val = 0;
+  }
+
+  Serial.print("|");
+  Serial.print(ldr_value);
+  Serial.print("|");
+  Serial.print(humid_val);
+  Serial.print("|");
+  Serial.print(temp_val);
+  Serial.print("|");
+  Serial.print(moisture_val);
+  Serial.print("|");
+  Serial.print(fstatus);
+  Serial.println("|");
+  delay(200);
+  // Count++;
+  
+  // if (Count==30){
+  //   send_to_server(CO, CO2, lpg);
+  //   Count=0;
+  // }
+}
